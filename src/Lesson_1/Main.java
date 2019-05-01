@@ -37,6 +37,10 @@ public class Main {
         return false;
     }
 
+    public static String sayHello(String name) {
+        return "Hello " + name +" !";
+    }
+
     public static String visokosnyiGod (int year) {
         String res;
         if (year % 4 == 0 || year % 400 == 0 && year % 100 != 0) {
