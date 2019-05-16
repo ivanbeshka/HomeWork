@@ -4,8 +4,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class XO {
-    static final int SIZE = 3;
-    static final int DOTS_TO_WIN = 3;
+    static final int SIZE = 4;
+    static final int DOTS_TO_WIN = 4;
 
     static final char DOT_X = 'X';
     static final char DOT_O = 'O';
@@ -85,7 +85,7 @@ public class XO {
             y = sc.nextInt() - 1;
         } while (!isCellValid(y, x));
 
-        map[x][y] = DOT_X;
+        map[y][x] = DOT_X;
     }
 
     public static void aiTurn() {
@@ -121,11 +121,9 @@ public class XO {
 
         for (int i = 0; i < SIZE; i++) {
             int check = 0;
-            int[] massiveCheck = new int[SIZE];
             for (int j = 0; j < SIZE; j++) {
                 if (map[i][j] == symbol) {
                     check++;
-                    massiveCheck[j] = check;
                 }
                 if (check == DOTS_TO_WIN) {
                     return true;
@@ -162,7 +160,7 @@ public class XO {
         }
 
         int check = 0;
-        int j = SIZE;
+        int j = SIZE - 1;
         for (int i = 0; i < SIZE; i++) {
             if (map[i][j] == symbol){
                 check++;
