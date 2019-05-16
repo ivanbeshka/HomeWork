@@ -61,7 +61,7 @@ public class XO {
 
     public static void printMap() {
         System.out.print("  ");
-        for (int i = 0; i <= SIZE; i++) {
+        for (int i = 1; i <= SIZE; i++) {
             System.out.print(i + " ");
         }
         System.out.println();
