@@ -4,8 +4,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class XO {
-    static final int SIZE = 4;
-    static final int DOTS_TO_WIN = 4;
+    static final int SIZE = 3;
+    static final int DOTS_TO_WIN = 3;
 
     static final char DOT_X = 'X';
     static final char DOT_O = 'O';
@@ -20,16 +20,16 @@ public class XO {
         initMap();
         printMap();
 
-        while (true){
+        while (true) {
             humanTurn();
             printMap();
 
-            if(checkWin(DOT_X)) {
+            if (checkWin(DOT_X)) {
                 System.out.println("Вы победитель");
                 break;
             }
 
-            if (isFull()){
+            if (isFull()) {
                 System.out.println("Ничья");
                 break;
             }
@@ -37,12 +37,12 @@ public class XO {
             aiTurn();
             printMap();
 
-            if(checkWin(DOT_O)) {
+            if (checkWin(DOT_O)) {
                 System.out.println("Компьютер победитель");
                 break;
             }
 
-            if (isFull()){
+            if (isFull()) {
                 System.out.println("Ничья");
                 break;
             }
@@ -89,12 +89,27 @@ public class XO {
     }
 
     public static void aiTurn() {
-        int x, y;
-        do {
-            x = random.nextInt(SIZE);
-            y = random.nextInt(SIZE);
-        } while (!isCellValid(y, x));
+        int x = -1, y = -1;
 
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if(isCellValid(i,j)){
+                    map[i][j] = DOT_X;
+                    if(checkWin(DOT_X)){
+                        x = j;
+                        y = i;
+                    }
+                    map[i][j] = DOT_EMPTY;
+                }
+            }
+        }
+
+        if(x == -1&&y == -1) {
+            do {
+                x = random.nextInt(SIZE);
+                y = random.nextInt(SIZE);
+            } while (!isCellValid(y, x));
+        }
         map[y][x] = DOT_O;
     }
 
@@ -119,58 +134,70 @@ public class XO {
 
     public static boolean checkWin(char symbol) {
 
-        for (int i = 0; i < SIZE; i++) {
-            int check = 0;
+        for (int i = 0; i < SIZE ; i++) {
             for (int j = 0; j < SIZE; j++) {
-                if (map[i][j] == symbol) {
-                    check++;
-                }
-                if (check == DOTS_TO_WIN) {
+                if(checkWinGorizont(i,j,symbol)||checkWinVertical(i,j,symbol)
+                        ||checkWinDiagonal1(i,j,symbol)||checkWinDiagonal2(i,j,symbol)){
                     return true;
                 }
-                if (j == SIZE - 1) {
-                    check = 0;
-                }
             }
         }
-
-        for (int i = 0; i < SIZE; i++) {
-            int check = 0;
-            for (int j = 0; j < SIZE; j++) {
-                if (map[j][i] == symbol) {
-                    check++;
-                }
-                if (check == DOTS_TO_WIN) {
-                    return true;
-                }
-                if (i == SIZE - 1) {
-                    check = 0;
-                }
-            }
-        }
-
-        for (int i = 0; i < SIZE; i++) {
-            int check = 0;
-            if (map[i][i] == symbol) {
-                check++;
-            }
-            if (check == DOTS_TO_WIN) {
-                return true;
-            }
-        }
-
-        int check = 0;
-        int j = SIZE - 1;
-        for (int i = 0; i < SIZE; i++) {
-            if (map[i][j] == symbol){
-                check++;
-            }
-            j--;
-            if(check == DOTS_TO_WIN){
-                return true;
-            }
-        }
-
         return false;
+    }
+
+    public static boolean checkWinGorizont(int x, int y, char symbol) {
+        if (x < 0 || y < 0 || x + DOTS_TO_WIN > SIZE) {
+            return false;
+        }
+
+        int c = 0;
+        for (int i = 0; i < DOTS_TO_WIN; i++) {
+            if (map[i + x][y] == symbol) {
+                c++;
+            }
+        }
+        return c == DOTS_TO_WIN;
+    }
+
+    public static boolean checkWinVertical(int x, int y, char symbol) {
+        if (x < 0 || y < 0 || y + DOTS_TO_WIN > SIZE) {
+            return false;
+        }
+
+        int c = 0;
+        for (int i = 0; i < DOTS_TO_WIN; i++) {
+            if (map[x][y + i] == symbol) {
+                c++;
+            }
+        }
+        return c == DOTS_TO_WIN;
+    }
+
+    public static boolean checkWinDiagonal1(int x, int y, char symbol) {
+        if (x < 0 || y < 0 || x + DOTS_TO_WIN > SIZE || y + DOTS_TO_WIN > SIZE) {
+            return false;
+        }
+
+        int c = 0;
+        for (int i = 0; i < DOTS_TO_WIN; i++) {
+            if (map[x + i][y + i] == symbol) {
+                c++;
+            }
+        }
+        return c == DOTS_TO_WIN;
+    }
+
+    public static boolean checkWinDiagonal2(int x, int y, char symbol) {
+        if (x < 0 || y + 1 - DOTS_TO_WIN < 0 || x + DOTS_TO_WIN > SIZE) {
+            return false;
+        }
+
+        int c = 0;
+        for (int i = 0; i < DOTS_TO_WIN; i++) {
+            if (map[x + i][y - i] == symbol) {
+                c++;
+            }
+        }
+        return c == DOTS_TO_WIN;
     }
 }
