@@ -6,19 +6,60 @@ import java.util.Scanner;
 
 
 public class Logic {
-    static int SIZE = 3;
-    static int DOTS_TO_WIN = 3;
+    static int SIZE;
+    static int DOTS_TO_WIN;
+    static int gameMode;
+
+    public static final int HUMAN_VS_AI = 0;
+    public static final int HUMAN_VS_HUMAN = 1;
 
     static final char DOT_X = 'X';
     static final char DOT_O = 'O';
     static final char DOT_EMPTY = '.';
 
-    static boolean humanWent = true;
+    public static boolean gameFinished = false;
+    public static String winnerName = "...";
 
     static char[][] map;
 
     static Scanner sc = new Scanner(System.in);
     static Random random = new Random();
+
+    public static void start(){
+        gameFinished = true;
+        printMap();
+        Game_Window.printMap();
+
+        if (checkWin(DOT_X)) {
+            System.out.println("Игрок победил");
+            winnerName = "Вы победитель";
+            return;
+        }
+
+        if (isFull()) {
+            System.out.println("Ничья");
+            winnerName = "Ничья";
+            return;
+        }
+
+        aiTurn();
+        printMap();
+        Game_Window.printMap();
+
+        if (checkWin(DOT_O)) {
+            System.out.println("Компьютер победил");
+            winnerName = "Компьютер победил";
+            return;
+        }
+
+        if (isFull()) {
+            System.out.println("Ничья");
+            winnerName = "Ничья";
+            return;
+        }
+
+        gameFinished = false;
+    }
 
     public static void initMap() {
         map = new char[SIZE][SIZE];
@@ -47,16 +88,11 @@ public class Logic {
         }
     }
 
-    public static void humanTurn() {
-        int x, y;
-
-        do {
-            System.out.println("Input X Y");
-            x = sc.nextInt() - 1;
-            y = sc.nextInt() - 1;
-        } while (!isCellValid(y, x));
-
-        map[y][x] = DOT_X;
+    public static void setHumanXY(int x, int y) {
+        if(isCellValid(y,x)){
+            map[y][x] = DOT_X;
+            start();
+        }
     }
 
     public static void aiTurn() {
@@ -170,5 +206,17 @@ public class Logic {
             }
         }
         return c == DOTS_TO_WIN;
+    }
+
+    public static void setSize(int SIZE){
+        Logic.SIZE = SIZE;
+    }
+
+    public static void setDotsToWin(int DOTS_TO_WIN){
+        Logic.DOTS_TO_WIN = DOTS_TO_WIN;
+    }
+
+    public static void setGameMode(int gameMode){
+        Logic.gameMode = gameMode;
     }
 }

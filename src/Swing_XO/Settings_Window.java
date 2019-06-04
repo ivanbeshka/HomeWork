@@ -20,8 +20,8 @@ public class Settings_Window extends JFrame {
     private static final String STR_WIN_LEN = "Длинна победной линии : ";
     private static final String STR_FIELD_SIZE = "Размер поля : ";
 
-    private JRadioButton jrbHumanVsAi = new JRadioButton("Человек против компьютера", true);
-    private JRadioButton jrbHumanVsHuman = new JRadioButton("Человек против Человека");
+    private static JRadioButton jrbHumanVsAi = new JRadioButton("Человек против компьютера", true);
+    private static JRadioButton jrbHumanVsHuman = new JRadioButton("Человек против Человека");
     private ButtonGroup gameMode = new ButtonGroup();
 
     private static JSlider slFieldSize;
@@ -59,6 +59,7 @@ public class Settings_Window extends JFrame {
                 int currentFieldSize = slFieldSize.getValue();
                 jlbFieldSize.setText(STR_FIELD_SIZE + currentFieldSize);
                 slWinLength.setMaximum(currentFieldSize);
+                Logic.setSize(currentFieldSize);
             }
         });
         add(slFieldSize);
@@ -73,6 +74,7 @@ public class Settings_Window extends JFrame {
             public void stateChanged(ChangeEvent e) {
                 int currentWinLen = slWinLength.getValue();
                 jlbWinLength.setText(STR_WIN_LEN + currentWinLen);
+                Logic.setDotsToWin(currentWinLen);
             }
         });
         add(slWinLength);
@@ -85,6 +87,13 @@ public class Settings_Window extends JFrame {
         add(jrbHumanVsAi);
         add(jrbHumanVsHuman);
 
+    }
+
+    public static int getGameMode(){
+        if(jrbHumanVsAi.isSelected()){
+            return Logic.HUMAN_VS_AI;
+        }
+        return Logic.HUMAN_VS_HUMAN;
     }
 
 }

@@ -16,7 +16,7 @@ public class Game_Window extends JFrame {
 
     Settings_Window settingsWindow;
 
-    JButton[][] btns;
+    static JButton[][] btns;
 
     public Game_Window() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -63,6 +63,8 @@ public class Game_Window extends JFrame {
 
     private void startNewGame() {
 
+        Logic.setGameMode(Settings_Window.getGameMode());
+
         Font font = new Font("Arial", Font.BOLD, 24);
         btns = new JButton[Logic.SIZE][Logic.SIZE];
         JPanel jPanel = new JPanel();
@@ -79,11 +81,11 @@ public class Game_Window extends JFrame {
                 btns[i][j].addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (Logic.isCellValid(x, y)) {
-                            System.out.println(x + " " + y);
-                            Logic.map[y][x] = Logic.DOT_X;
-                            Logic.humanWent = false;
+                        if (!Logic.gameFinished) {
+                            Logic.setHumanXY(x, y);
                         }
+
+                        System.out.println(x + " " + y);
                     }
                 });
                 jPanel.add(btns[i][j]);
@@ -91,65 +93,14 @@ public class Game_Window extends JFrame {
         }
         add(jPanel);
         setVisible(true);
-        start();
     }
 
-    void start() {
-        Logic.initMap();
-        Logic.printMap();
-        printMap();
-        System.out.println("Игра началась");
-
-        while (true) {
-
-            do {
-                try {
-                    sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } while (!Logic.humanWent);
-
-            Logic.humanWent = false;
-            System.out.println("Человек сходил");
-            Logic.printMap();
-            printMap();
-
-            if (Logic.checkWin(Logic.DOT_X)) {
-                System.out.println("Игрок победил");
-                return;
-            }
-
-            if (Logic.isFull()) {
-                System.out.println("Ничья");
-                return;
-            }
-
-            Logic.aiTurn();
-            System.out.println("Компьютер сходил");
-            Logic.printMap();
-            printMap();
-
-            if (Logic.checkWin(Logic.DOT_O)) {
-                System.out.println("Компьютер победил");
-                return;
-            }
-
-            if (Logic.isFull()) {
-                System.out.println("Ничья");
-                return;
-            }
-
-        }
-    }
-
-    private void printMap() {
-
+    public static void printMap() {
         for (int i = 0; i < Logic.SIZE; i++) {
             for (int j = 0; j < Logic.SIZE; j++) {
-                btns[i][j].setText("" + Logic.map[i][j]);
+                btns[i][j].setText(""+Logic.map[i][j]);
             }
         }
-
     }
+
 }
