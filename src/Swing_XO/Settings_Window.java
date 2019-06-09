@@ -27,6 +27,8 @@ public class Settings_Window extends JFrame {
     private static JSlider slFieldSize;
     private static JSlider slWinLength;
 
+    private static JButton startNewGame = new JButton("Начать новую игру!");
+
     public Settings_Window(Game_Window gameWindow) {
         this.gameWindow = gameWindow;
 
@@ -38,11 +40,35 @@ public class Settings_Window extends JFrame {
         int posY = (int) (gameWindowBounds.getCenterY() - WIN_HEIGHT / 2);
         setLocation(posX, posY);
 
-        setLayout(new GridLayout(9, 1));
+        setLayout(new GridLayout(10, 1));
 
         addGameControlMode();
 
         addGameControlFieldWinLength();
+
+        startNewGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnStartNewGameClicked();
+            }
+        });
+        add(startNewGame);
+
+        setVisible(false);
+    }
+
+    private void btnStartNewGameClicked() {
+        int gameMode = Settings_Window.getGameMode();
+        int fieldSize = slFieldSize.getValue();
+        int winLength = slWinLength.getValue();
+
+        Logic.SIZE = fieldSize;
+        Logic.DOTS_TO_WIN = winLength;
+
+        Logic.initMap();
+        Logic.gameFinished = false;
+
+        Game_Window.startNewGame(gameMode,fieldSize,winLength);
 
         setVisible(false);
     }
@@ -59,7 +85,6 @@ public class Settings_Window extends JFrame {
                 int currentFieldSize = slFieldSize.getValue();
                 jlbFieldSize.setText(STR_FIELD_SIZE + currentFieldSize);
                 slWinLength.setMaximum(currentFieldSize);
-                Logic.setSize(currentFieldSize);
             }
         });
         add(slFieldSize);
@@ -74,7 +99,6 @@ public class Settings_Window extends JFrame {
             public void stateChanged(ChangeEvent e) {
                 int currentWinLen = slWinLength.getValue();
                 jlbWinLength.setText(STR_WIN_LEN + currentWinLen);
-                Logic.setDotsToWin(currentWinLen);
             }
         });
         add(slWinLength);
@@ -91,9 +115,9 @@ public class Settings_Window extends JFrame {
 
     public static int getGameMode(){
         if(jrbHumanVsAi.isSelected()){
-            return Logic.HUMAN_VS_AI;
+            return Map.HUMAN_VS_AI;
         }
-        return Logic.HUMAN_VS_HUMAN;
+        return Map.HUMAN_VS_HUMAN;
     }
 
 }
